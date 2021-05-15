@@ -1,0 +1,2 @@
+healthCheck: ${file(./src/serverless/functions/healthCheck.yml)}
+apodQuery: ${file(./src/serverless/functions/apodQuery.yml)}

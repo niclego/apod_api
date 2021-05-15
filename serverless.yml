@@ -1,0 +1,35 @@
+service: apod-api
+useDotenv: true
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  timeout: 30
+  stage: develop
+  region: us-east-2
+  lambdaHashingVersion: 20201221
+  iam:
+    role:
+      statements:
+        - Effect: 'Allow'
+          Action: [
+            "dynamodb:Query",
+            "dynamodb:BatchWriteItem",
+            "dynamodb:BatchGetItem",
+            "dynamodb:Scan",
+            "dynamodb:PutItem",
+            "dynamodb:UpdateItem",
+            "dynamodb:DeleteItem",
+            "dynamodb:GetItem"
+          ]
+          Resource:
+            - arn:aws:dynamodb:us-east-2:171467378457:table/APODMasterTable
+
+functions: ${file(./src/serverless/functions.yml)}
+
+plugins:
+  # - serverless-dynamodb-local
+  # - serverless-offline # serverless-offline needs to be last in the list
+
+custom:
+  webpackIncludeModules: true

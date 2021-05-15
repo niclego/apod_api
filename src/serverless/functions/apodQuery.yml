@@ -1,0 +1,26 @@
+handler: src/handlers/apodQuery.handler
+description: apodQuery handler
+environment: ${file(./src/serverless/env.yml)}
+# vpc: ${self:custom.${env:ENVIRONMENT, 'develop'}.vpc}
+events:
+  - http:
+      path: apodQuery/{type}/{date}
+      method: get
+      request:
+        parameters:
+          paths:
+            type: true
+            date: true
+      cors:
+        origin: '*'
+        headers: 
+          - Content-Type
+          - X-Amz-Date
+          - Authorization
+          - X-Api-Key
+          - X-Amz-Security-Token
+          - Z-Amz-User-Agent
+          - set-cookie
+        allowCredentials: false
+      # authorizer:
+      #   arn: arn:aws:lambda:us
