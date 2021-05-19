@@ -6,21 +6,21 @@ var dynamodb = new AWS.DynamoDB();
 var params = {
     AttributeDefinitions: [
        {
-      AttributeName: "TYPE", 
+      AttributeName: "type", 
       AttributeType: "S"
      }, 
        {
-      AttributeName: "ID", 
+      AttributeName: "id", 
       AttributeType: "S"
      }
     ], 
     KeySchema: [
        {
-      AttributeName: "TYPE", 
+      AttributeName: "type", 
       KeyType: "HASH"
      }, 
        {
-      AttributeName: "ID", 
+      AttributeName: "id", 
       KeyType: "RANGE"
      }
     ], 

@@ -28,13 +28,15 @@ const handler = async (event, context, callback) => {
             } = apodResp.data;
 
             resp = {
-                "TYPE": type,
-                "ID": date,
+                type,
+                "id": date,
                 explanation,
                 hdurl,
                 title,
                 url,
-                copyright
+                copyright,
+                likes: 0,
+                comments: 0
             }
 
             // Do I need to await this?
@@ -54,11 +56,15 @@ const handler = async (event, context, callback) => {
 
 const cacheNasaApod = async (resp) => {
     const {
+        type,
+        id,
+        title,
         explanation,
         hdurl,
-        title,
         url,
-        copyright
+        copyright,
+        likes,
+        comments
     } = resp;
 
     const attributes = {
@@ -66,17 +72,19 @@ const cacheNasaApod = async (resp) => {
         hdurl,
         title,
         url,
-        copyright
+        copyright,
+        likes,
+        comments
     };
 
-    const params = dynamo.createPutParams("APODMasterTable", "TYPE", resp["TYPE"], "ID", resp["ID"], attributes);
+    const params = dynamo.createPutParams("APODMasterTable", "type", type, "id", id, attributes);
     console.log("[apodQuery.cacheNasaApod dynamodb put params]", params);
 
     return await dynamo.put(params);
 }
 
 const queryDynamo = async (type, date) => {
-    const params = dynamo.createQueryParams("APODMasterTable", "TYPE", type, "ID", date);
+    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date);
     console.log("[apodQuery.queryDynamo dynamodb query params]", params);
 
     return await dynamo.query(params);
