@@ -1,2 +1,3 @@
 healthCheck: ${file(./src/serverless/functions/healthCheck.yml)}
-apodQuery: ${file(./src/serverless/functions/apodQuery.yml)}
+getApod: ${file(./src/serverless/functions/getApod.yml)}
+getSeeAlso: ${file(./src/serverless/functions/getSeeAlso.yml)}

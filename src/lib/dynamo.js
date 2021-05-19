@@ -74,6 +74,7 @@ class Dynamo {
     ) {
         let params = {
             TableName: tableName,
+            Limit: '10',
             KeyConditionExpression: '#type = :type',
             ExpressionAttributeNames: {
                 '#type': sortKeyName
@@ -125,6 +126,23 @@ class Dynamo {
         }
 
         return params
+    }
+
+    createUpdateParams(
+        tableName, 
+        sortKeyName, 
+        sortKeyValue, 
+        rangeKeyName, 
+        rangeKeyValue,
+        attributes
+    ) {
+        var params = {
+            TableName: tableName,
+            Key: {
+                sortKeyName: sortKeyValue,
+                rangeKeyName: rangeKeyValue
+            }
+        };
     }
 }
 
