@@ -3,20 +3,17 @@ const { Dynamo } = require('../lib/dynamo');
 const dynamo = new Dynamo();
 
 const handler = async (event, context, callback) => {
-    console.log("[getSeeAlso.handler event]", event);
+    console.log("[getComments.handler event]", event);
     event = typeof event === 'string' ? JSON.parse(event) : event;
 
-    if (!event.pathParameters || !event.pathParameters.type || !event.pathParameters.date) {
-        callback(null, createLambdaResponse(400, { message: 'date is missing from path.' }));
+    if (!event.pathParameters || !event.pathParameters.type) {
+        callback(null, createLambdaResponse(400, { message: 'type is missing from path.' }));
     }
 
     const type = event.pathParameters.type;
-    let date = event.pathParameters.date;
-    const dateArr = date.split("-");
-    date = dateArr[0] + "-" + dateArr[1];
 
     try {
-        let resp = await queryDynamo(type, date);
+        let resp = await queryDynamo(type);
         
         // TODO filter resp of all items w/o images
         
@@ -26,11 +23,12 @@ const handler = async (event, context, callback) => {
     }
 }
 
-const queryDynamo = async (type, date) => {
-    // Table Name, Type name, Type value, Range name, Range value, Strong Consistency, Scan Index Forward, Limit, ProjectionExpression
-    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date, false, true, 10, "#url");
+const queryDynamo = async (type) => {
 
-    console.log("[getSeeAlso.queryDynamo dynamodb query params]", params);
+    // Table Name, Type name, Type value, Range name, Range value, Strong Consistency, Scan Index Forward, Limit, ProjectionExpression
+    const params = dynamo.createQueryParams("APODCommentTable", "type", type, "id", null, false, false, 1);
+
+    console.log("[getComments.queryDynamo dynamodb query params]", params);
 
     return await dynamo.query(params);
 }

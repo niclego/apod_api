@@ -1,3 +1,5 @@
 healthCheck: ${file(./src/serverless/functions/healthCheck.yml)}
 getApod: ${file(./src/serverless/functions/getApod.yml)}
 getSeeAlso: ${file(./src/serverless/functions/getSeeAlso.yml)}
+getComments: ${file(./src/serverless/functions/getComments.yml)}
+postComment: ${file(./src/serverless/functions/postComment.yml)}

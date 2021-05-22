@@ -1,0 +1,18 @@
+handler: src/handlers/postComment.handler
+description: postComment handler
+environment: ${file(./src/serverless/env.yml)}
+events:
+  - http:
+      path: comments
+      method: post
+      cors:
+        origin: '*'
+        headers: 
+          - Content-Type
+          - X-Amz-Date
+          - Authorization
+          - X-Api-Key
+          - X-Amz-Security-Token
+          - Z-Amz-User-Agent
+          - set-cookie
+        allowCredentials: false

@@ -29,7 +29,7 @@ const handler = async (event, context, callback) => {
 
             resp = {
                 type,
-                "id": date,
+                id: date,
                 explanation,
                 hdurl,
                 title,
@@ -84,7 +84,10 @@ const cacheNasaApod = async (resp) => {
 }
 
 const queryDynamo = async (type, date) => {
-    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date);
+    // Table Name, Type name, Type value, Range name, Range value, Strong Consistency, Scan Index Forward, Limit
+    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date, false, true, 1);
+
+    // const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date);
     console.log("[apodQuery.queryDynamo dynamodb query params]", params);
 
     return await dynamo.query(params);

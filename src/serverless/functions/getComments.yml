@@ -1,0 +1,22 @@
+handler: src/handlers/getComments.handler
+description: getComments handler
+environment: ${file(./src/serverless/env.yml)}
+events:
+  - http:
+      path: comments/{type}
+      method: get
+      request:
+        parameters:
+          paths:
+            type: true
+      cors:
+        origin: '*'
+        headers: 
+          - Content-Type
+          - X-Amz-Date
+          - Authorization
+          - X-Api-Key
+          - X-Amz-Security-Token
+          - Z-Amz-User-Agent
+          - set-cookie
+        allowCredentials: false

@@ -68,13 +68,13 @@ class Dynamo {
         sortKeyValue, 
         rangeKeyName, 
         rangeKeyValue,
-        nextToken,
-        strongConsistency, 
-    
+        strongConsistency,
+        scanIndexForward,
+        limit,
+        projectExpression
     ) {
         let params = {
             TableName: tableName,
-            Limit: '10',
             KeyConditionExpression: '#type = :type',
             ExpressionAttributeNames: {
                 '#type': sortKeyName
@@ -87,7 +87,8 @@ class Dynamo {
         if (!!rangeKeyName && !!rangeKeyValue) {
             params['ExpressionAttributeNames'] = {
                 ...params.ExpressionAttributeNames,
-                ['#rangeKeyName']: rangeKeyName
+                ['#rangeKeyName']: rangeKeyName,
+                ['#url']: "url"
             };
     
             params['ExpressionAttributeValues'] = {
@@ -100,8 +101,21 @@ class Dynamo {
         }
     
         if (!!strongConsistency) {
-            params['ConsistentRead'] = true;
+            params['ConsistentRead'] = strongConsistency;
         }
+
+        if (!scanIndexForward) {
+            params['ScanIndexForward'] = scanIndexForward;
+        }
+
+        if (!!limit) {
+            params["Limit"] = limit
+        }
+
+        if(!!projectExpression) {
+            params["ProjectionExpression"] = projectExpression;
+        }
+
         return params;
     }
     
