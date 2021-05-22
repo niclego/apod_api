@@ -3,12 +3,13 @@ description: getComments handler
 environment: ${file(./src/serverless/env.yml)}
 events:
   - http:
-      path: comments/{type}
+      path: comments/{type}/{date}
       method: get
       request:
         parameters:
           paths:
             type: true
+            date: true
       cors:
         origin: '*'
         headers: 

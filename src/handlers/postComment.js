@@ -7,25 +7,27 @@ const handler = async (event, context, callback) => {
     try {
         console.log("postComment event", event);
 
-        if (!body.type) {
-            throw "Please provide a type.";
-        }
-
-        const type = body.type;
-        console.log("type", type);
-        
+        const {
+            type,
+            commentText,
+            author,
+            likes
+        } = body;
+ 
         comment = {
             type,
-            id:  20,
-            commentText: "Hello World",
-            author: "nlegorrec",
-            likes: 0,
-            createdAt: Date.now()
+            id: Date.now(),
+            commentText,
+            author,
+            likes
         }
 
-        let resp = await postComment(comment)
+        await postComment(comment)
+        await incrementApodLikes(type)
+        callback(null, createLambdaResponse(200, {message: "success"}));
     } catch(err) {
-        callback(null, createLambdaResponse(400, err));
+        console.log(err);
+        callback(null, createLambdaResponse(400, err.message));
     }
 };
 
@@ -35,21 +37,39 @@ const postComment = async (comment) => {
         id,
         commentText,
         author,
-        likes,
-        createdAt,
+        likes
     } = comment;
 
     const attributes = {
         commentText,
         author,
-        likes,
-        createdAt,
+        likes
     };
 
     const params = dynamo.createPutParams("APODCommentTable", "type", type, "id", id, attributes);
     console.log("[postComment dynamodb put params]", params);
 
     return await dynamo.put(params);
+}
+
+const incrementApodLikes = async (commentType) => {
+    const type = commentType.split("#")[0];
+    const date = commentType.split("#")[1];
+
+    const attributes = {
+        TableName: "APODMasterTable",
+        PartitionKeyName: "type",
+        PartitionKeyValue: type,
+        SortKeyName: "id",
+        SortKeyValue: date,
+        UpdateExpression: "SET comments = comments + :val",
+        ExpressionAttributeValues: { ":val": 1 }
+    };
+    
+    const params = dynamo.createUpdateParams(attributes);
+    console.log("[postComment dynamodb update params]", params);
+
+    return await dynamo.update(params);
 }
 
 module.exports.handler = handler;

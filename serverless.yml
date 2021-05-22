@@ -24,6 +24,7 @@ provider:
           ]
           Resource:
             - arn:aws:dynamodb:us-east-2:171467378457:table/APODMasterTable
+            - arn:aws:dynamodb:us-east-2:171467378457:table/APODCommentTable
 
 functions: ${file(./src/serverless/functions.yml)}
 

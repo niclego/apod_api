@@ -62,58 +62,67 @@ class Dynamo {
         }
     }
 
-    createQueryParams(
-        tableName, 
-        sortKeyName, 
-        sortKeyValue, 
-        rangeKeyName, 
-        rangeKeyValue,
-        strongConsistency,
-        scanIndexForward,
-        limit,
-        projectExpression
-    ) {
+    createQueryParams(attributes) {
+        const {
+            TableName,
+            PartitionKeyName,
+            PartitionKeyValue,
+            SortKeyName,
+            SortKeyValue,
+            StrongConsistency,
+            ScanIndexForward,
+            Limit,
+            ProjectionExpression,
+            ProjectExpressionVariables
+        } = attributes;
+
         let params = {
-            TableName: tableName,
+            TableName: TableName,
             KeyConditionExpression: '#type = :type',
             ExpressionAttributeNames: {
-                '#type': sortKeyName
+                '#type': PartitionKeyName
             },
             ExpressionAttributeValues: {
-                ':type': sortKeyValue
+                ':type': PartitionKeyValue
             }
         };
     
-        if (!!rangeKeyName && !!rangeKeyValue) {
+        if (!!SortKeyName && !!SortKeyValue) {
             params['ExpressionAttributeNames'] = {
                 ...params.ExpressionAttributeNames,
-                ['#rangeKeyName']: rangeKeyName,
-                ['#url']: "url"
+                ['#sortKeyName']: SortKeyName,
             };
     
             params['ExpressionAttributeValues'] = {
                 ...params.ExpressionAttributeValues,
-                [':rangeKeyValue']: rangeKeyValue
+                [':sortKeyValue']: SortKeyValue
             };
     
-            const keyConditionExpression = ' AND begins_with(#rangeKeyName, :rangeKeyValue)';
+            const keyConditionExpression = ' AND begins_with(#sortKeyName, :sortKeyValue)';
             params['KeyConditionExpression'] += keyConditionExpression;
         }
     
-        if (!!strongConsistency) {
-            params['ConsistentRead'] = strongConsistency;
+        if (!!StrongConsistency) {
+            params['ConsistentRead'] = StrongConsistency;
         }
 
-        if (!scanIndexForward) {
-            params['ScanIndexForward'] = scanIndexForward;
+        if (!!ScanIndexForward) {
+            params['ScanIndexForward'] = ScanIndexForward;
         }
 
-        if (!!limit) {
-            params["Limit"] = limit
+        if (!!Limit) {
+            params["Limit"] = Limit
         }
 
-        if(!!projectExpression) {
-            params["ProjectionExpression"] = projectExpression;
+        if(!!ProjectionExpression) {
+            params["ProjectionExpression"] = ProjectionExpression;
+        }
+
+        if(!!ProjectExpressionVariables) {
+            params['ExpressionAttributeNames'] = {
+                ...params.ExpressionAttributeNames,
+                ...ProjectExpressionVariables
+            };
         }
 
         return params;
@@ -142,21 +151,31 @@ class Dynamo {
         return params
     }
 
-    createUpdateParams(
-        tableName, 
-        sortKeyName, 
-        sortKeyValue, 
-        rangeKeyName, 
-        rangeKeyValue,
-        attributes
-    ) {
+    createUpdateParams(attributes) {
+        const {
+            TableName,
+            PartitionKeyName,
+            PartitionKeyValue,
+            SortKeyName,
+            SortKeyValue,
+            UpdateExpression,
+            ExpressionAttributeNames,
+            ExpressionAttributeValues
+        } = attributes;
+
         var params = {
-            TableName: tableName,
-            Key: {
-                sortKeyName: sortKeyValue,
-                rangeKeyName: rangeKeyValue
-            }
+            TableName: TableName,
+            "Key": {},
+            UpdateExpression,
+            ExpressionAttributeValues,
+            ExpressionAttributeNames
         };
+
+        params["Key"][PartitionKeyName] = PartitionKeyValue;
+        params["Key"][SortKeyName] = SortKeyValue;
+
+        return params;
+
     }
 }
 

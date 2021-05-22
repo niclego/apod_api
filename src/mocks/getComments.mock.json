@@ -1,5 +1,6 @@
 {
     "pathParameters": {
-        "type": "NASA#2021-05-07"
+        "type": "NASA",
+        "date": "2021-05-07"
     }
 }

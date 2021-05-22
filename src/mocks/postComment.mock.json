@@ -1,5 +1,8 @@
 {
     "body": {
-        "type": "NASA#2021-05-07"
+        "type": "NASA#2021-05-07",
+        "commentText": "Testing",
+        "author": "nlegorrec",
+        "likes": 0
     }
 }

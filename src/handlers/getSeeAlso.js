@@ -22,14 +22,22 @@ const handler = async (event, context, callback) => {
         
         callback(null, createLambdaResponse(200, resp));
     } catch(err) {
-        callback(null, createLambdaResponse(400, err));
+        callback(null, createLambdaResponse(400, err.message));
     }
 }
 
 const queryDynamo = async (type, date) => {
-    // Table Name, Type name, Type value, Range name, Range value, Strong Consistency, Scan Index Forward, Limit, ProjectionExpression
-    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date, false, true, 10, "#url");
-
+    const params = dynamo.createQueryParams({
+        TableName: "APODMasterTable",
+        PartitionKeyName: "type",
+        PartitionKeyValue: type,
+        SortKeyName: "id",
+        SortKeyValue: date,
+        Limit: 10,
+        ProjectionExpression: "#url, #type, id",
+        ProjectExpressionVariables: {"#url": "url", "#type": "type"}
+    });
+    
     console.log("[getSeeAlso.queryDynamo dynamodb query params]", params);
 
     return await dynamo.query(params);

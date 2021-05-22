@@ -50,7 +50,7 @@ const handler = async (event, context, callback) => {
                 callback(null, createLambdaResponse(200, resp.Items[0]));
         }
     } catch(err) {
-        callback(null, createLambdaResponse(400, err));
+        callback(null, createLambdaResponse(400, err.message));
     }
 }
 
@@ -84,10 +84,15 @@ const cacheNasaApod = async (resp) => {
 }
 
 const queryDynamo = async (type, date) => {
-    // Table Name, Type name, Type value, Range name, Range value, Strong Consistency, Scan Index Forward, Limit
-    const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date, false, true, 1);
+    const params = dynamo.createQueryParams({
+        TableName: "APODMasterTable",
+        PartitionKeyName: "type",
+        PartitionKeyValue: type,
+        SortKeyName: "id",
+        SortKeyValue: date,
+        Limit: 1
+    });
 
-    // const params = dynamo.createQueryParams("APODMasterTable", "type", type, "id", date);
     console.log("[apodQuery.queryDynamo dynamodb query params]", params);
 
     return await dynamo.query(params);
