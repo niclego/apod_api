@@ -23,7 +23,9 @@ const handler = async (event, context, callback) => {
         }
 
         await postComment(comment)
-        await incrementApodLikes(type)
+
+        // Do I need to await this?
+        incrementApodLikes(type)
         callback(null, createLambdaResponse(200, {message: "success"}));
     } catch(err) {
         console.log(err);
