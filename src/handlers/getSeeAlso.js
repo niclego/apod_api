@@ -19,6 +19,7 @@ const handler = async (event, context, callback) => {
         let resp = await queryDynamo(type, date);
         
         // TODO filter resp of all items w/o images
+        resp.Items = resp.Items.filter(item => !item.url.includes("youtube"))
         
         callback(null, createLambdaResponse(200, resp));
     } catch(err) {
