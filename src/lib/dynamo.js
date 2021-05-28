@@ -69,6 +69,7 @@ class Dynamo {
             PartitionKeyValue,
             SortKeyName,
             SortKeyValue,
+            KeyConditionExpression,
             StrongConsistency,
             ScanIndexForward,
             Limit,
@@ -97,8 +98,13 @@ class Dynamo {
                 ...params.ExpressionAttributeValues,
                 [':sortKeyValue']: SortKeyValue
             };
-    
-            const keyConditionExpression = ' AND begins_with(#sortKeyName, :sortKeyValue)';
+            
+            let keyConditionExpression = "";
+            if (!!KeyConditionExpression) {
+                keyConditionExpression = KeyConditionExpression
+            } else {
+                keyConditionExpression = ' AND begins_with(#sortKeyName, :sortKeyValue)'
+            }
             params['KeyConditionExpression'] += keyConditionExpression;
         }
     

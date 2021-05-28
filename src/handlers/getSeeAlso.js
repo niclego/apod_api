@@ -19,7 +19,7 @@ const handler = async (event, context, callback) => {
         let resp = await queryDynamo(type, date);
         
         // TODO filter resp of all items w/o images
-        resp.Items = resp.Items.filter(item => !item.url.includes("youtube")).slice(1);
+        resp.Items = resp.Items.filter(item => !item.url.includes("youtube"));
         
         callback(null, createLambdaResponse(200, resp));
     } catch(err) {
@@ -34,6 +34,7 @@ const queryDynamo = async (type, date) => {
         PartitionKeyValue: type,
         SortKeyName: "id",
         SortKeyValue: date,
+        // KeyConditionExpression: ' AND #sortKeyName <= :sortKeyValue',
         Limit: 10,
         ProjectionExpression: "#url, #type, id",
         ProjectExpressionVariables: {"#url": "url", "#type": "type"},
