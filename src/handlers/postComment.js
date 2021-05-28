@@ -16,7 +16,7 @@ const handler = async (event, context, callback) => {
  
         comment = {
             type,
-            id: Date.now(),
+            id: Math.floor(Date.now() / 1000),
             commentText,
             author,
             likes

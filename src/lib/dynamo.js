@@ -106,7 +106,7 @@ class Dynamo {
             params['ConsistentRead'] = StrongConsistency;
         }
 
-        if (!!ScanIndexForward) {
+        if (ScanIndexForward != undefined) {
             params['ScanIndexForward'] = ScanIndexForward;
         }
 

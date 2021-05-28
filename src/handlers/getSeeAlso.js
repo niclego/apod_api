@@ -19,7 +19,7 @@ const handler = async (event, context, callback) => {
         let resp = await queryDynamo(type, date);
         
         // TODO filter resp of all items w/o images
-        resp.Items = resp.Items.filter(item => !item.url.includes("youtube"))
+        resp.Items = resp.Items.filter(item => !item.url.includes("youtube")).slice(1);
         
         callback(null, createLambdaResponse(200, resp));
     } catch(err) {
@@ -36,7 +36,8 @@ const queryDynamo = async (type, date) => {
         SortKeyValue: date,
         Limit: 10,
         ProjectionExpression: "#url, #type, id",
-        ProjectExpressionVariables: {"#url": "url", "#type": "type"}
+        ProjectExpressionVariables: {"#url": "url", "#type": "type"},
+        ScanIndexForward: false
     });
     
     console.log("[getSeeAlso.queryDynamo dynamodb query params]", params);
