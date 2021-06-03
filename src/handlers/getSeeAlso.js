@@ -13,7 +13,7 @@ const handler = async (event, context, callback) => {
     const type = event.pathParameters.type;
     let date = event.pathParameters.date;
     const dateArr = date.split("-");
-    date = dateArr[0] + "-" + dateArr[1];
+    date = dateArr[0] + "-" + dateArr[1] + "-" + dateArr[2].charAt(0);
 
     try {
         let resp = await queryDynamo(type, date);

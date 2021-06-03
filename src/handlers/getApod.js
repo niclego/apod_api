@@ -90,7 +90,8 @@ const queryDynamo = async (type, date) => {
         PartitionKeyValue: type,
         SortKeyName: "id",
         SortKeyValue: date,
-        Limit: 1
+        ScanIndexForward: false,
+        Limit: 31
     });
 
     console.log("[apodQuery.queryDynamo dynamodb query params]", params);
